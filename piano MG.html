@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Piano MG">
+<meta name="theme-color" content="#1a5c38">
+<title>Piano MG – Calabrese Maria Giovanna</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,500;0,600;1,400&display=swap');
+
+  :root {
+    --green-dark: #1a5c38;
+    --green-med: #2e7d52;
+    --green-light: #d6efe1;
+    --green-pale: #f0faf4;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --orange: #d35400;
+    --orange-light: #fef3e2;
+    --blue: #1b4f8a;
+    --blue-light: #ebf2fb;
+    --yellow: #f39c12;
+    --yellow-light: #fefae0;
+    --gray: #6b7280;
+    --gray-light: #f5f5f5;
+    --white: #ffffff;
+    --text: #1a1a1a;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #f0faf4;
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 90px;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-med) 100%);
+    color: white;
+    padding: env(safe-area-inset-top, 20px) 20px 20px;
+    padding-top: max(env(safe-area-inset-top), 20px);
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(26,92,56,0.4);
+  }
+  .header-name { font-family: 'Lora', serif; font-size: 20px; font-weight: 600; opacity: 0.9; }
+  .header-title { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0,0,0,0.08);
+    display: flex;
+    padding-bottom: env(safe-area-inset-bottom, 10px);
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 4px 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: none;
+    color: var(--gray);
+    font-family: 'Nunito', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .nav-item.active { color: var(--green-dark); }
+  .nav-item .nav-icon { font-size: 22px; margin-bottom: 2px; transition: transform 0.2s; }
+  .nav-item.active .nav-icon { transform: scale(1.15); }
+
+  /* PAGES */
+  .page { display: none; padding: 16px; animation: fadeIn 0.3s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--green-dark);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* DAY SELECTOR */
+  .day-selector {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0 12px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .day-selector::-webkit-scrollbar { display: none; }
+  .day-btn {
+    flex-shrink: 0;
+    background: white;
+    border: 2px solid var(--green-light);
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .day-btn.active {
+    background: var(--green-dark);
+    border-color: var(--green-dark);
+    color: white;
+    box-shadow: 0 4px 12px rgba(26,92,56,0.3);
+  }
+
+  /* MEAL CARD */
+  .meal-card {
+    background: var(--green-pale);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--green-med);
+  }
+  .meal-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--green-med);
+    margin-bottom: 6px;
+  }
+  .meal-options { display: flex; flex-direction: column; gap: 6px; }
+  .meal-option {
+    background: white;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--text);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .meal-option.selected {
+    border-color: var(--green-med);
+    background: var(--green-pale);
+  }
+  .meal-option .opt-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--green-med);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* FARMACI */
+  .farmaco-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--blue);
+  }
+  .farmaco-info { flex: 1; }
+  .farmaco-nome { font-size: 14px; font-weight: 800; color: var(--blue); }
+  .farmaco-dose { font-size: 12px; color: var(--gray); margin-top: 2px; }
+  .farmaco-orario {
+    background: var(--blue-light);
+    color: var(--blue);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .time-group-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin: 14px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ALIMENTI LISTS */
+  .food-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .food-item.ok { background: var(--green-pale); border-left: 3px solid var(--green-med); }
+  .food-item.no { background: var(--red-light); border-left: 3px solid var(--red); }
+  .food-item .food-name { font-weight: 700; }
+  .food-item .food-why { font-size: 11px; color: var(--gray); margin-top: 2px; }
+  .food-item .food-alt { font-size: 11px; color: var(--green-med); margin-top: 3px; font-weight: 600; }
+
+  /* RICETTE */
+  .ricetta-card {
+    background: white;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .ricetta-header {
+    background: linear-gradient(135deg, var(--blue) 0%, #2563ab 100%);
+    color: white;
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ricetta-header-text { font-size: 14px; font-weight: 800; flex: 1; }
+  .ricetta-chevron { font-size: 18px; transition: transform 0.3s; }
+  .ricetta-chevron.open { transform: rotate(180deg); }
+  .ricetta-body { display: none; padding: 14px 16px; }
+  .ricetta-body.open { display: block; }
+  .ricetta-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--blue);
+    margin: 12px 0 6px;
+  }
+  .ricetta-section-title:first-child { margin-top: 0; }
+  .ricetta-text { font-size: 13px; line-height: 1.6; color: var(--text); }
+  .alt-box {
+    background: var(--yellow-light);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--orange);
+    margin-top: 6px;
+    border-left: 3px solid var(--yellow);
+  }
+  .perche-box {
+    background: var(--green-pale);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--green-dark);
+    margin-top: 6px;
+    border-left: 3px solid var(--green-med);
+    font-weight: 600;
+  }
+
+  /* DOLCI */
+  .dolce-card {
+    background: var(--orange-light);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border-left: 4px solid var(--orange);
+  }
+  .dolce-nome { font-size: 14px; font-weight: 800; color: var(--orange); }
+  .dolce-perche { font-size: 12px; color: var(--gray); margin-top: 4px; }
+  .dolce-attenzione { font-size: 11px; color: var(--red); margin-top: 4px; font-weight: 600; }
+
+  /* CONTATTI */
+  .contatto-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-decoration: none;
+    color: inherit;
+    border: 1.5px solid var(--green-light);
+  }
+  .contatto-icon { font-size: 28px; }
+  .contatto-info { flex: 1; }
+  .contatto-nome { font-size: 14px; font-weight: 800; color: var(--green-dark); }
+  .contatto-numero { font-size: 16px; font-weight: 900; color: var(--blue); letter-spacing: 0.5px; }
+  .contatto-orario { font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+  /* EDIT MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px;
+    padding-bottom: max(env(safe-area-inset-bottom), 24px);
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-title { font-size: 18px; font-weight: 900; color: var(--green-dark); margin-bottom: 16px; }
+  .modal-handle { width: 40px; height: 4px; background: #e5e7eb; border-radius: 2px; margin: 0 auto 16px; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 12px; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; display: block; }
+  .form-input, .form-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--green-light);
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--green-med); }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, var(--green-dark), var(--green-med));
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .btn-secondary {
+    width: 100%;
+    background: var(--gray-light);
+    color: var(--gray);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .btn-danger {
+    width: 100%;
+    background: var(--red-light);
+    color: var(--red);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .edit-btn {
+    background: var(--green-pale);
+    border: 1.5px solid var(--green-light);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green-med);
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    flex-shrink: 0;
+  }
+
+  /* SPESA */
+  .spesa-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: white;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .spesa-item.checked { opacity: 0.5; text-decoration: line-through; }
+  .spesa-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--green-med);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .spesa-item.checked .spesa-check {
+    background: var(--green-med);
+    border-color: var(--green-med);
+  }
+  .spesa-cat { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 0.6px; margin: 14px 0 6px; }
+
+  /* SECTION TABS */
+  .section-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .section-tabs::-webkit-scrollbar { display: none; }
+  .section-tab {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid var(--green-light);
+    background: white;
+    color: var(--gray);
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.2s;
+  }
+  .section-tab.active {
+    background: var(--green-dark);
+    border-color: var(--green-dark);
+    color: white;
+  }
+
+  /* AVVISO */
+  .avviso {
+    background: var(--yellow-light);
+    border: 1.5px solid var(--yellow);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 12px;
+    color: #7c5a00;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-ok { background: var(--green-light); color: var(--green-dark); }
+  .badge-no { background: var(--red-light); color: var(--red); }
+
+  /* SAVE INDICATOR */
+  .save-indicator {
+    position: fixed;
+    top: max(env(safe-area-inset-top), 20px);
+    right: 16px;
+    background: var(--green-dark);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 300;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .save-indicator.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-name">🌿 Calabrese Maria Giovanna</div>
+  <div class="header-title">Piano personalizzato • 81 anni • MRC Stadio IV</div>
+</div>
+
+<div id="saveIndicator" class="save-indicator">✓ Salvato</div>
+
+<!-- ══════════════════════ PAGE: DIETA ══════════════════════ -->
+<div class="page active" id="page-dieta">
+  <div class="avviso">⚠️ Piano orientativo – da personalizzare con il dietista del CAD ASL Roma 2</div>
+
+  <div class="day-selector" id="daySelector"></div>
+  <div id="dietaContent"></div>
+</div>
+
+<!-- ══════════════════════ PAGE: FARMACI ══════════════════════ -->
+<div class="page" id="page-farmaci">
+  <div class="card">
+    <div class="card-title">💊 Schema Terapia</div>
+    <div class="avviso">⚠️ Non modificare mai la terapia senza indicazione medica</div>
+    <div id="farmaciContent"></div>
+  </div>
+  <div style="text-align:center; margin-top:8px;">
+    <button class="edit-btn" style="font-size:13px; padding:8px 18px;" onclick="openFarmaciEdit()">✏️ Modifica farmaci</button>
+  </div>
+</div>
+
+<!-- ══════════════════════ PAGE: ALIMENTI ══════════════════════ -->
+<div class="page" id="page-alimenti">
+  <div class="section-tabs">
+    <div class="section-tab active" onclick="setAlimentiTab('no',this)">❌ Vietati</div>
+    <div class="section-tab" onclick="setAlimentiTab('ok',this)">✅ Consigliati</div>
+    <div class="section-tab" onclick="setAlimentiTab('dolci',this)">🍫 Voglia di dolce</div>
+  </div>
+  <div id="alimentiContent"></div>
+</div>
+
+<!-- ══════════════════════ PAGE: RICETTE ══════════════════════ -->
+<div class="page" id="page-ricette">
+  <div id="ricetteContent"></div>
+</div>
+
+<!-- ══════════════════════ PAGE: SPESA + CONTATTI ══════════════════════ -->
+<div class="page" id="page-altro">
+  <div class="section-tabs">
+    <div class="section-tab active" onclick="setAltroTab('spesa',this)">🛒 Lista Spesa</div>
+    <div class="section-tab" onclick="setAltroTab('contatti',this)">📞 Contatti CAD</div>
+    <div class="section-tab" onclick="setAltroTab('note',this)">📝 Note Mediche</div>
+  </div>
+  <div id="altroContent"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="showPage('dieta',this)">
+    <span class="nav-icon">🥗</span>Dieta
+  </button>
+  <button class="nav-item" onclick="showPage('farmaci',this)">
+    <span class="nav-icon">💊</span>Farmaci
+  </button>
+  <button class="nav-item" onclick="showPage('alimenti',this)">
+    <span class="nav-icon">🥦</span>Alimenti
+  </button>
+  <button class="nav-item" onclick="showPage('ricette',this)">
+    <span class="nav-icon">🍳</span>Ricette
+  </button>
+  <button class="nav-item" onclick="showPage('altro',this)">
+    <span class="nav-icon">📋</span>Altro
+  </button>
+</nav>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">Modifica</div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+
+const DEFAULT_DATA = {
+  farmaci: [
+    { nome: 'CARDICOR', dose: '1,25mg – 2 pillole', orario: 'Mattina prima colazione', colore: '#1b4f8a', note: 'Betabloccante per cardiopatia ipertensiva' },
+    { nome: 'PLAUNAC (Olmesartan)', dose: '20mg – 1 pillola', orario: 'Mattina prima colazione', colore: '#1b4f8a', note: 'Sartano antipertensivo – valutare col nefrologo' },
+    { nome: 'PANTORC', dose: '40mg – 1 pillola', orario: 'Mattina prima colazione', colore: '#1b4f8a', note: 'Protettore gastrico – a stomaco vuoto' },
+    { nome: 'QUETIAPINA', dose: '1 pillola', orario: 'Mattina prima colazione', colore: '#7c3aed', note: '⚠️ Da rivalutare con medico – rischio cadute' },
+    { nome: 'ELIQUIS', dose: '5mg – 1 pillola', orario: 'Mattina dopo colazione', colore: '#c0392b', note: 'Anticoagulante – non interrompere mai' },
+    { nome: 'LASIX', dose: '25mg – 2 pillole', orario: 'Mattina dopo colazione', colore: '#1b4f8a', note: 'Diuretico – monitorare calcio e potassio' },
+    { nome: 'ELIQUIS', dose: '5mg – 1 pillola', orario: 'Cena', colore: '#c0392b', note: 'Anticoagulante – seconda dose serale' },
+    { nome: 'ATORVASTATINA', dose: '10mg – 1 pillola', orario: 'Cena', colore: '#2e7d52', note: 'Statina per colesterolo – funziona bene (LDL 88)' },
+    { nome: 'JARDIANCE', dose: '1 pillola', orario: 'Cena', colore: '#d35400', note: '⚠️ Verificare col nefrologo – efficacia ridotta a stadio IV' },
+    { nome: 'QUETIAPINA', dose: '1 pillola', orario: 'Cena', colore: '#7c3aed', note: '⚠️ Da rivalutare – accumulo con reni malati' },
+    { nome: 'KEPPRA (Levetiracetam)', dose: 'come da prescrizione', orario: 'Come prescritto', colore: '#1a5c38', note: 'Antiepillettico – livello attuale 22,70 mg/L (ok). Monitorare con reni malati' },
+  ],
+
+  dieta: {
+    lun: {
+      colazione: { a: 'Caffè d\'orzo + yogurt greco bianco 125g + stevia + 2 gallette integrali senza sale', b: 'Latte scremato 150ml + caffè + 2 fette biscottate integrali' },
+      spuntino: { a: '1 mela piccola', b: '3–4 fragole fresche' },
+      pranzo: { a: '65g pasta integrale con zucchine e basilico + 1 cuc. olio evo', b: '65g pasta integrale con crema di zucchine e ricotta 40g' },
+      merenda: { a: '2 fette biscottate integrali senza zucchero', b: '125g kefir naturale bianco' },
+      cena: { a: '120g merluzzo al limone + 150g zucchine grigliate + 60g pane integrale', b: '120g sogliola al forno + 150g fagiolini lessati + 60g pane integrale' },
+    },
+    mar: {
+      colazione: { a: 'Latte parz. scremato 150ml tiepido + caffè + 2 fette biscottate con velo ricotta', b: 'Caffè + yogurt greco 125g + 2 gallette integrali' },
+      spuntino: { a: 'Mezza pera piccola', b: 'Mela cotta al microonde con cannella Ceylon' },
+      pranzo: { a: 'Panino integrale 60g con bresaola 40g + rucola + olio + limone', b: 'Panino integrale 60g con tacchino arrosto 60g + lattuga' },
+      merenda: { a: '125g kefir naturale bianco', b: 'Yogurt greco bianco + stevia' },
+      cena: { a: '120g petto pollo al rosmarino + 200g carote e fagiolini lessati + 60g pane', b: '120g tacchino al forno + zucchine grigliate + 60g pane integrale' },
+    },
+    mer: {
+      colazione: { a: 'Caffè orzo + yogurt greco 125g + 2 gallette integrali', b: 'Latte scremato 150ml + caffè + 2 fette biscottate integrali' },
+      spuntino: { a: '1 pera piccola', b: '1 mela piccola' },
+      pranzo: { a: '65g pasta integrale con tonno al naturale 60g e zucchine', b: '65g pasta integrale con verdure grigliate (melanzane + peperoni)' },
+      merenda: { a: '2 fette biscottate integrali + velo di ricotta fresca', b: '2 gallette integrali' },
+      cena: { a: 'Frittata 2 uova con zucchine + insalata verde + 60g pane integrale', b: 'Frittata 2 uova con peperoni + rucola + 60g pane integrale' },
+    },
+    gio: {
+      colazione: { a: 'Latte scremato 150ml + caffè + gallette integrali con velo ricotta', b: 'Caffè orzo + yogurt greco 125g + 2 fette biscottate' },
+      spuntino: { a: '1 mela piccola', b: '3–4 fragole fresche' },
+      pranzo: { a: 'Panino integrale 60g con ricotta fresca 50g + zucchine grigliate', b: 'Panino integrale 60g con tonno al naturale 50g + cetriolo + carota' },
+      merenda: { a: 'Yogurt greco 125g + stevia + pizzico cannella Ceylon', b: '2 fette biscottate integrali senza zucchero' },
+      cena: { a: '130g salmone fresco + fagiolini e carote lessati + 60g pane integrale', b: '130g orata al forno + zucchine + 60g pane integrale' },
+    },
+    ven: {
+      colazione: { a: 'Caffè orzo + kefir naturale 125g + 2 fette biscottate integrali', b: 'Latte scremato + caffè + 2 gallette integrali con ricotta' },
+      spuntino: { a: '4–5 fragole fresche', b: 'Mezza pera' },
+      pranzo: { a: '65g pasta integrale con crema di zucchine e ricotta 40g', b: '65g pasta integrale con merluzzo 60g e zucchine' },
+      merenda: { a: '2 gallette integrali senza sale', b: 'Yogurt greco bianco + stevia' },
+      cena: { a: '120g tacchino arrosto + peperoni e zucchine grigliate + 60g pane', b: '120g pollo al forno + carote e fagiolini + 60g pane integrale' },
+    },
+    sab: {
+      colazione: { a: 'Latte scremato 150ml tiepido + caffè + fette biscottate con ricotta', b: 'Caffè + yogurt greco 125g + 2 gallette integrali' },
+      spuntino: { a: 'Mela cotta al microonde con pizzico cannella Ceylon', b: '1 pera piccola o 3–4 fragole' },
+      pranzo: { a: 'Panino integrale 60g con tonno + cetriolo + carota', b: 'Panino integrale 60g con bresaola + rucola + limone' },
+      merenda: { a: '125g yogurt greco bianco + stevia', b: 'Kefir naturale bianco 125g' },
+      cena: { a: '120g merluzzo al forno + carote lessate + insalata verde + 60g pane', b: '130g salmone + fagiolini + carote + 60g pane integrale' },
+    },
+    dom: {
+      colazione: { a: 'Caffè leggero + yogurt greco 125g + 2 gallette integrali', b: 'Latte scremato + caffè + fette biscottate integrali senza zucchero' },
+      spuntino: { a: 'Mezza pera o 3–4 fragole', b: '1 mela piccola' },
+      pranzo: { a: '65g pasta integrale con verdure grigliate alla siciliana', b: '65g pasta integrale con zucchine, aglio e basilico + olio evo' },
+      merenda: { a: '2 fette biscottate + velo di ricotta fresca', b: '2 gallette integrali senza sale' },
+      cena: { a: 'Frittata 2 uova + verdure + insalata + 60g pane integrale', b: '120g pollo al limone + zucchine grigliate + 60g pane integrale' },
+    },
+  },
+
+  alimentiNo: [
+    { nome: 'Zucchero, miele, dolci, biscotti normali', perche: 'Alzano la glicemia rapidamente – aggravano il diabete (HbA1c 8,3%) e danneggiano i reni', alt: '✅ Stevia, eritritolo, ricotta con stevia, mela cotta' },
+    { nome: 'Pane bianco, pasta bianca in eccesso', perche: 'Indice glicemico alto – picco di glicemia rapido', alt: '✅ Pane integrale 60g, pasta integrale 65g al dente' },
+    { nome: 'Mortadella, salame, wurstel, insaccati grassi', perche: 'Alto contenuto di sale (reni), fosforo (tossico per reni malati), grassi saturi (trigliceridi)', alt: '✅ Bresaola, tacchino arrosto al banco, tonno al naturale' },
+    { nome: 'Formaggi stagionati (parmigiano, pecorino, grana)', perche: 'Fosforo altissimo – con reni stadio IV il fosforo si accumula e danneggia ossa e cuore', alt: '✅ Ricotta fresca (pochissimo fosforo)' },
+    { nome: 'Formaggino, sottilette, Philadelphia', perche: 'Fosforo artificiale (additivi E450, E452), sale elevato. Peggio dei formaggi naturali per i reni', alt: '✅ Ricotta fresca con erbe aromatiche' },
+    { nome: 'Carne rossa frequente', perche: 'Eccesso di proteine e fosforo per rene stadio IV. Aumenta azotemia e uricemia già alte', alt: '✅ Pollo/tacchino 1–2 volte/sett., pesce 3 volte/sett.' },
+    { nome: 'Alcol (vino, birra, aperitivi)', perche: 'Alza i trigliceridi (già 229). Interferisce con Eliquis aumentando rischio emorragico', alt: '✅ Acqua naturale a basso residuo fisso' },
+    { nome: 'Succhi di frutta, bibite, coca cola', perche: 'Zuccheri semplici concentrati – picco glicemico immediato', alt: '✅ Acqua naturale, al massimo acqua con fettina di limone' },
+    { nome: 'Banane, kiwi, arance, uva, fichi (alto potassio)', perche: 'Con reni stadio IV il potassio si accumula e può causare aritmie cardiache', alt: '✅ Mele, pere, fragole, ananas in piccole porzioni' },
+    { nome: 'Spinaci, bietole, pomodori in eccesso', perche: 'Alto potassio – non eliminabile dai reni malati', alt: '✅ Zucchine, carote, fagiolini, cetriolo, lattuga' },
+    { nome: 'FANS (ibuprofene, nimesulide, diclofenac)', perche: 'Nefrotossici – distruggono la funzione renale residua. ASSOLUTAMENTE VIETATI', alt: '✅ Per il dolore: paracetamolo solo su indicazione medica' },
+    { nome: 'Sale da cucina aggiunto', perche: 'Alza la pressione e fa trattenere liquidi aggravando cuore e reni', alt: '✅ Rosmarino, basilico, origano, prezzemolo, aglio, limone' },
+    { nome: 'Dado da cucina, brodi in cubo, salsa di soia', perche: 'Sale altissimo, glutammato, additivi di fosforo', alt: '✅ Brodo fatto in casa senza sale, erbe aromatiche' },
+  ],
+
+  alimentiOk: [
+    { nome: 'Pasta e pane integrali', perche: 'Indice glicemico basso – glicemia stabile. Fibra che rallenta assorbimento zuccheri', qty: 'Pasta 65g/pasto • Pane 60g/pasto' },
+    { nome: 'Pesce bianco (merluzzo, sogliola, orata)', perche: 'Proteina ideale per i reni – pochissimo fosforo e potassio. Digeribilissima', qty: '120–130g • 3–4 volte/settimana' },
+    { nome: 'Salmone fresco (non affumicato)', perche: 'Omega-3 – abbassa i trigliceridi (229 → obiettivo <150). Protegge il cuore', qty: '130g • 2 volte/settimana max' },
+    { nome: 'Pollo e tacchino senza pelle', perche: 'Proteina magra con meno fosforo della carne rossa', qty: '120g • 1–2 volte/settimana' },
+    { nome: 'Uova intere', perche: 'Proteina completa, facilissima da digerire, pochissimo potassio', qty: '2 uova • massimo 2–3 volte/settimana' },
+    { nome: 'Zucchine', perche: 'La verdura più sicura per i reni – pochissimo potassio e fosforo', qty: '150–200g a pasto – liberamente' },
+    { nome: 'Carote, fagiolini, cetriolo, lattuga', perche: 'Basso potassio, ricche di fibre. Aiutano la glicemia', qty: '150g a pasto come contorno' },
+    { nome: 'Ricotta fresca di mucca', perche: 'Pochissimo fosforo e sale rispetto a qualsiasi altro formaggio', qty: '40–50g per pasto • 3–4 volte/settimana' },
+    { nome: 'Yogurt greco bianco 0% grassi', perche: 'Probiotici, proteina, pochissimi zuccheri se bianco', qty: '125g al giorno – preferibilmente a colazione' },
+    { nome: 'Kefir naturale bianco', perche: 'Probiotici eccellenti, pochissimi zuccheri – meglio del latte per il microbioma', qty: '125g al giorno' },
+    { nome: 'Olio extravergine di oliva', perche: 'Grassi monoinsaturi – abbassa LDL, protegge cuore e vasi. Anti-infiammatorio', qty: 'Massimo 3–4 cucchiaini al giorno totali' },
+    { nome: 'Mele e pere', perche: 'Basso potassio, basso indice glicemico, ricche di pectina', qty: '1 frutto piccolo al giorno' },
+    { nome: 'Fragole', perche: 'Basso potassio, bassissimo zucchero, ricche di vitamina C', qty: '4–5 fragole • 3–4 volte/settimana' },
+    { nome: 'Erbe aromatiche (basilico, rosmarino, prezzemolo)', perche: 'Sostituiscono il sale aromatizzando. Pochissimo potassio', qty: 'Liberamente su tutto' },
+    { nome: 'Cannella di Ceylon (solo Ceylon, non Cassia)', perche: 'Abbassa leggermente la glicemia post-pasto. Soddisfa voglia di dolce', qty: 'Pizzico al giorno. Solo erboristeria/bio' },
+    { nome: 'Acqua naturale a basso residuo fisso (<50 mg/l)', perche: 'Idrata senza sovraccaricare i reni di minerali', qty: '1,5 litri al giorno distribuiti' },
+  ],
+
+  dolci: [
+    { nome: '🍫 1 quadratino cioccolato fondente 85%+', perche: 'Antiossidanti, pochissimo zucchero, soddisfa la voglia', att: 'Solo 1 quadratino – non di più' },
+    { nome: '🥣 Ricotta fresca 50g + stevia + pizzico cannella Ceylon', perche: 'Cremosa come un dolce, pochissimo fosforo e sale, non alza la glicemia', att: 'Solo ricotta fresca, non stagionata' },
+    { nome: '🍎 Mela cotta al microonde 2 min con cannella Ceylon', perche: 'Dolce naturale, fibra, indice glicemico più basso da cotta', att: 'Senza zucchero aggiunto' },
+    { nome: '🥛 Yogurt greco bianco 125g + stevia + mezza mela a pezzetti', perche: 'Proteina + frutto + dolcificante naturale. Non alza la glicemia', att: 'Solo stevia o eritritolo, non aspartame' },
+    { nome: '🫙 2 gallette integrali + velo crema di mandorle pura 5g', perche: 'Grassi buoni, sazia, sapore ricco e dolciastro naturale', att: 'Solo crema di mandorle pura senza zucchero aggiunto' },
+    { nome: '🍮 Budino fatto in casa: latte scremato 150ml + amido di mais 10g + stevia', perche: 'Morbido, dolce, pochissime calorie, quasi zero fosforo', att: 'Non usare budino in busta – troppi additivi e fosforo' },
+  ],
+
+  ricette: [
+    {
+      nome: '🥪 Panino con Bresaola e Rucola',
+      ingredienti: 'Pane integrale 60g • Bresaola 40g • Rucola 20g • Olio evo 1 cucchiaino • Succo di limone',
+      preparazione: 'Condire la rucola con olio e limone senza sale. Disporre la bresaola sulle fette di pane integrale. Aggiungere la rucola condita. Niente sale aggiunto.',
+      alternativa: 'Sostituire bresaola con tacchino arrosto al banco salumeria (non in busta)',
+      perche: 'Bresaola è l\'affettato più magro e meno salato. Rucola ha pochissimo potassio'
+    },
+    {
+      nome: '🥪 Panino con Ricotta e Zucchine Grigliate',
+      ingredienti: 'Pane integrale 60g • Ricotta fresca 50g • Zucchine 60g • Olio evo 1 cucchiaino • Basilico fresco',
+      preparazione: 'Grigliare zucchine in padella antiaderente senza olio, 3–4 min per lato. Mescolare ricotta con olio e basilico. Spalmare sul pane, aggiungere zucchine raffreddate.',
+      alternativa: 'Zucchine al forno a 200° per 15 min invece che in padella',
+      perche: 'Ricotta ha pochissimo fosforo e sale rispetto al formaggino. Soddisfa la voglia di cremoso'
+    },
+    {
+      nome: '🥪 Panino con Tacchino e Insalata',
+      ingredienti: 'Pane integrale 60g • Tacchino arrosto a fette 60g (banco salumeria) • Lattuga 30g • Cetriolo 20g • Olio evo 1 cucchiaino',
+      preparazione: 'Chiedere il tacchino arrosto al banco, NON quello in busta confezionata. Lavare lattuga. Tagliare cetriolo a rondelle. Condire con olio. Assemblare senza sale.',
+      alternativa: 'Sostituire lattuga con rucola. Cetriolo con carote grattugiate',
+      perche: 'Tacchino arrosto è proteina magra con pochissimo sale. Lattuga e cetriolo hanno bassissimo potassio'
+    },
+    {
+      nome: '🥪 Panino con Tonno al Naturale',
+      ingredienti: 'Pane integrale 60g • Tonno al naturale 50g • Cetriolo 30g • Carote grattugiate 20g • Olio evo 1 cucchiaino • Limone',
+      preparazione: 'Scolare e SCIACQUARE il tonno sotto acqua corrente (riduce il sale). Schiacciare con forchetta, condire con olio e limone. Aggiungere cetriolo e carote. Niente maionese.',
+      alternativa: 'Al posto del cetriolo: zucchine grigliate fredde',
+      perche: 'Tonno al naturale porta omega-3 che abbassano i trigliceridi. Sciacquarlo riduce ulteriormente il sale'
+    },
+    {
+      nome: '🍝 Pasta con Zucchine e Basilico',
+      ingredienti: 'Pasta integrale 65g • Zucchine 150g • Aglio 1 spicchio • Olio evo 2 cucchiaini • Basilico fresco • Acqua di cottura 1 cucchiaio',
+      preparazione: 'Tagliare zucchine a rondelle. In padella: olio con aglio, aggiungere zucchine, cuocere 8–10 min. Cuocere pasta AL DENTE in acqua poco salata. Mantecare con zucchine e acqua di cottura. Basilico a fuoco spento. No parmigiano.',
+      alternativa: 'Zucchine al forno a 200° per 15 min. Aggiungere pizzico di peperoncino per più sapore',
+      perche: 'Zucchine = verdura più sicura per i reni. Pasta al dente ha indice glicemico più basso'
+    },
+    {
+      nome: '🍝 Pasta con Tonno e Verdure',
+      ingredienti: 'Pasta integrale 65g • Tonno al naturale 60g • Zucchine o peperoni 100g • Pomodorini 30g (solo 3–4) • Olio evo 2 cucchiaini • Aglio • Prezzemolo',
+      preparazione: 'Scolare e sciacquare il tonno. Tagliare verdure a cubetti. Soffriggere aglio in olio, cuocere verdure 6–7 min. Aggiungere tonno solo all\'ultimo, mescolare delicatamente e spegnere. Unire pasta al dente. Prezzemolo tritato sopra.',
+      alternativa: 'Omettere pomodorini per ridurre potassio. Sostituire tonno con merluzzo',
+      perche: 'Omega-3 del tonno abbassano i trigliceridi. Solo 3–4 pomodorini per limitare il potassio'
+    },
+    {
+      nome: '🍝 Pasta con Crema di Zucchine e Ricotta',
+      ingredienti: 'Pasta integrale 65g • Zucchine 100g • Ricotta fresca 40g • Olio evo 2 cucchiaini • Aglio • Basilico o menta',
+      preparazione: 'Tagliare zucchine a cubetti. Soffriggere con aglio e olio 8 min. Frullare METÀ zucchine con ricotta e un cucchiaio di acqua calda fino a crema liscia. Cuocere pasta al dente. Unire alla padella con zucchine rimaste. Aggiungere crema, mescolare, basilico.',
+      alternativa: 'Versione ancora più leggera: frullare solo le zucchine senza ricotta',
+      perche: 'Effetto cremoso senza panna o formaggi pesanti. Ricotta fresca ha pochissimo fosforo'
+    },
+    {
+      nome: '🍝 Pasta con Verdure Grigliate',
+      ingredienti: 'Pasta integrale 65g • Melanzane 80g • Peperoni rossi/gialli 80g • Pomodoro fresco 30g • Olio evo 2 cucchiaini • Aglio • Basilico',
+      preparazione: 'Tagliare melanzane a cubetti, cospargere di poco sale, lasciare 15 min, SCIACQUARE bene. Tagliare peperoni a listarelle. Soffriggere aglio, cuocere verdure 10–12 min. Pomodoro negli ultimi 3 min. Unire pasta al dente. Basilico a crudo.',
+      alternativa: 'Verdure al forno a 200° per 20 min – risultato più leggero',
+      perche: 'Melanzane e peperoni hanno potassio moderato ma molti antiossidanti. Sciacquare le melanzane riduce il sale'
+    },
+    {
+      nome: '🐟 Pesce Bianco con Zucchine',
+      ingredienti: 'Merluzzo o sogliola 120g • Zucchine 150g • Olio evo 2 cucchiaini • Aglio • Limone • Prezzemolo fresco',
+      preparazione: 'Cuocere zucchine a rondelle in padella con olio e aglio per 8 min. Togliere. Aggiungere olio, adagiare il filetto, cuocere 4–5 min per lato a fuoco medio. Limone a fine cottura. Impiattare con zucchine. Prezzemolo tritato sopra. No sale.',
+      alternativa: 'Al forno a 180° per 15–18 min con olio, limone e prezzemolo – risultato più morbido',
+      perche: 'Pesce bianco = proteina ideale per i reni. Pochissimo fosforo e potassio. Zucchine = contorno più sicuro'
+    },
+    {
+      nome: '🐔 Pollo al Rosmarino con Carote e Fagiolini',
+      ingredienti: 'Petto pollo o tacchino senza pelle 120g • Carote 150g • Fagiolini 80g • Olio evo 2 cucchiaini • Limone • Rosmarino fresco',
+      preparazione: 'Lessare carote e fagiolini in acqua NON salata per 10 min. Scolare e condire con olio e limone. Battere leggermente il pollo. In padella con olio e rosmarino, cuocere 5–6 min per lato a fuoco medio. Limone a fine cottura. No sale né dado.',
+      alternativa: 'Al forno a 180° per 20–25 min con olio, limone e rosmarino – si prepara senza sorveglianza',
+      perche: 'Pollo e tacchino sono le carni meno dannose per i reni. Carote e fagiolini hanno potassio basso'
+    },
+    {
+      nome: '🍳 Frittata di Verdure con Insalata',
+      ingredienti: '2 uova intere • Zucchine o peperoni 100g • Insalata verde o rucola 30g • Olio evo 2 cucchiaini • Basilico o erba cipollina',
+      preparazione: 'Tagliare verdure a cubetti. In padella antiaderente: metà olio, cuocere verdure 5 min. Sbattere uova con erba cipollina, SENZA sale. Aggiungere verdure cotte. Versare in padella con resto olio. Cuocere 3–4 min per lato a fuoco BASSO. Servire con insalata + olio.',
+      alternativa: 'In forno a 180° in stampo antiaderente per 12–15 min – più uniforme, non va girata',
+      perche: 'Uova = proteina completa facilissima da digerire, pochissimo potassio. Perfetta anche fredda per chi non vuole cucinare'
+    },
+    {
+      nome: '🐟 Salmone Fresco con Fagiolini e Carote',
+      ingredienti: 'Filetto salmone fresco 130g (NON affumicato) • Fagiolini 150g • Carote 80g • Olio evo 2 cucchiaini • Limone • Aneto o prezzemolo',
+      preparazione: 'Lessare fagiolini e carote in acqua NON salata per 10 min. Scolare e condire. In padella antiaderente con olio, adagiare salmone con pelle verso il basso. Cuocere 4 min per lato senza muoverlo. Limone sopra. Impiattare con verdure. Aneto o prezzemolo.',
+      alternativa: 'Al forno a 180° in carta forno con limone, olio e aneto per 15–18 min – più morbido e profumato',
+      perche: 'Salmone fresco = fonte più ricca di omega-3 che abbassano i trigliceridi. MAI salmone affumicato'
+    },
+  ],
+
+  spesa: {
+    frigo: ['Yogurt greco bianco 0%', 'Kefir naturale bianco', 'Ricotta fresca di mucca', 'Bresaola', 'Tacchino arrosto (banco salumeria)', 'Uova', 'Latte parzialmente scremato', 'Zucchine', 'Carote', 'Fagiolini', 'Lattuga/rucola', 'Peperoni', 'Cetriolo', 'Salmone fresco o surgelato', 'Merluzzo/sogliola surgelato', 'Petto di pollo/tacchino'],
+    dispensa: ['Pasta integrale', 'Pane integrale a fette (in freezer)', 'Gallette integrali senza sale', 'Fette biscottate integrali senza zucchero', 'Tonno al naturale in scatola', 'Olio extravergine di oliva', 'Stevia o eritritolo', 'Amido di mais', 'Cioccolato fondente 85%+', 'Crema di mandorle pura senza zucchero', 'Cannella di Ceylon (erboristeria/bio)'],
+    erbe: ['Basilico fresco', 'Prezzemolo fresco', 'Rosmarino fresco', 'Erba cipollina', 'Aneto (per il salmone)'],
+  },
+
+  contatti: [
+    { nome: 'CAD / Assistenza Domiciliare', numero: '06 5100 8349', orario: 'Lun–Ven 8:30–12:30', icon: '🏠' },
+    { nome: 'Prelievi Domiciliari', numero: '06 5100 6650', orario: 'Lun–Sab 8:00–18:00', icon: '🩸' },
+    { nome: 'Prelievi Domiciliari (Numero Verde)', numero: '800 938861', orario: 'Lun–Sab 8:00–18:00 • Gratuito', icon: '🩸' },
+    { nome: 'Distretto 7 – Via Cartagine', numero: '06 5100 6619', orario: 'Orario ufficio', icon: '🏥' },
+  ],
+
+  note: [
+    '⚠️ NIENTE FANS (ibuprofene, nimesulide, diclofenac) – vietati con rene malato',
+    '⚠️ Nessun integratore senza approvazione del nefrologo',
+    '⚠️ Quetiapina x2 al giorno da rivalutare urgentemente col medico',
+    '⚠️ Calcio sierico basso (7,90) – attendere prescrizione vitamina D dal nefrologo',
+    '🔴 VISITA NEFROLOGICA URGENTE – creatinina 1,92 in paziente monorene',
+    '🔴 VISITA DIABETOLOGICA URGENTE – HbA1c 8,3%',
+    '🟠 Visita cardiologica + ECG – entro 2–4 settimane',
+    '🟡 Controllo Keppra ogni 3–6 mesi – reni malati ne alterano l\'eliminazione',
+    '💧 Bere 1,5 litri di acqua al giorno (acqua a basso residuo fisso <50 mg/l)',
+    '🏠 Sicurezza casa: eliminare tappeti e ostacoli – rischio cadute molto alto',
+  ],
+
+  selectedMeals: {},
+  spesaChecked: [],
+};
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem('pianomg_v2');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return Object.assign({}, DEFAULT_DATA, parsed);
+    }
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+function saveData() {
+  try {
+    localStorage.setItem('pianomg_v2', JSON.stringify(state));
+    showSaveIndicator();
+  } catch(e) {}
+}
+
+let state = loadData();
+let currentDay = 'lun';
+let alimentiTab = 'no';
+let altroTab = 'spesa';
+
+const DAYS = [
+  { key: 'lun', label: 'Lun' },
+  { key: 'mar', label: 'Mar' },
+  { key: 'mer', label: 'Mer' },
+  { key: 'gio', label: 'Gio' },
+  { key: 'ven', label: 'Ven' },
+  { key: 'sab', label: 'Sab' },
+  { key: 'dom', label: 'Dom' },
+];
+
+const MEAL_LABELS = {
+  colazione: '☀️ Colazione',
+  spuntino: '🍎 Spuntino',
+  pranzo: '🍽️ Pranzo',
+  merenda: '🫖 Merenda',
+  cena: '🌙 Cena',
+};
+
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showSaveIndicator() {
+  const el = document.getElementById('saveIndicator');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+// ══════════════════════════════════════════════
+// DIETA PAGE
+// ══════════════════════════════════════════════
+
+function renderDaySel() {
+  const today = new Date().getDay();
+  const todayMap = [6,0,1,2,3,4,5]; // Sun=0 → dom
+  const todayKey = DAYS[todayMap[today]]?.key || 'lun';
+  if (!state.selectedMeals[todayKey]) currentDay = todayKey;
+
+  const sel = document.getElementById('daySelector');
+  sel.innerHTML = DAYS.map(d => `
+    <button class="day-btn ${d.key === currentDay ? 'active' : ''}" onclick="setDay('${d.key}')">
+      ${d.label}
+    </button>
+  `).join('');
+}
+
+function setDay(key) {
+  currentDay = key;
+  renderDaySel();
+  renderDieta();
+}
+
+function renderDieta() {
+  const day = state.dieta[currentDay];
+  if (!day) return;
+  const sel = state.selectedMeals[currentDay] || {};
+  const html = Object.entries(MEAL_LABELS).map(([k, label]) => {
+    const meal = day[k];
+    if (!meal) return '';
+    const chosen = sel[k] || 'a';
+    return `
+      <div class="meal-card">
+        <div class="meal-label" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>${label}</span>
+          <button class="edit-btn" onclick="editMeal('${currentDay}','${k}')">✏️</button>
+        </div>
+        <div class="meal-options">
+          <div class="meal-option ${chosen==='a'?'selected':''}" onclick="selectMeal('${currentDay}','${k}','a')">
+            <span class="opt-label">Opzione A</span>
+            ${meal.a}
+          </div>
+          <div class="meal-option ${chosen==='b'?'selected':''}" onclick="selectMeal('${currentDay}','${k}','b')">
+            <span class="opt-label">Opzione B</span>
+            ${meal.b}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('dietaContent').innerHTML = html;
+}
+
+function selectMeal(day, meal, opt) {
+  if (!state.selectedMeals[day]) state.selectedMeals[day] = {};
+  state.selectedMeals[day][meal] = opt;
+  saveData();
+  renderDieta();
+}
+
+function editMeal(day, meal) {
+  const m = state.dieta[day][meal];
+  openModal(`Modifica ${MEAL_LABELS[meal]}`, `
+    <div class="form-group">
+      <label class="form-label">Opzione A</label>
+      <textarea class="form-textarea" id="editA">${m.a}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Opzione B</label>
+      <textarea class="form-textarea" id="editB">${m.b}</textarea>
+    </div>
+    <button class="btn-primary" onclick="saveMealEdit('${day}','${meal}')">💾 Salva</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function saveMealEdit(day, meal) {
+  state.dieta[day][meal].a = document.getElementById('editA').value;
+  state.dieta[day][meal].b = document.getElementById('editB').value;
+  saveData();
+  closeModal();
+  renderDieta();
+}
+
+// ══════════════════════════════════════════════
+// FARMACI PAGE
+// ══════════════════════════════════════════════
+
+function renderFarmaci() {
+  const groups = {};
+  state.farmaci.forEach((f, i) => {
+    if (!groups[f.orario]) groups[f.orario] = [];
+    groups[f.orario].push({ ...f, idx: i });
+  });
+  let html = '';
+  for (const [orario, items] of Object.entries(groups)) {
+    let icon = '☀️';
+    if (orario.toLowerCase().includes('cena')) icon = '🌙';
+    else if (orario.toLowerCase().includes('dopo')) icon = '🌅';
+    html += `<div class="time-group-title">${icon} ${orario}</div>`;
+    items.forEach(f => {
+      html += `
+        <div class="farmaco-card" style="border-left-color:${f.colore};">
+          <div class="farmaco-info">
+            <div class="farmaco-nome" style="color:${f.colore};">${f.nome}</div>
+            <div class="farmaco-dose">${f.dose}</div>
+            <div class="farmaco-dose" style="margin-top:3px;color:#888;">${f.note}</div>
+          </div>
+          <button class="edit-btn" onclick="editFarmaco(${f.idx})">✏️</button>
+        </div>
+      `;
+    });
+  }
+  document.getElementById('farmaciContent').innerHTML = html;
+}
+
+function openFarmaciEdit() {
+  openModal('Aggiungi Farmaco', `
+    <div class="form-group"><label class="form-label">Nome farmaco</label><input class="form-input" id="fNome" placeholder="es. CARDICOR"></div>
+    <div class="form-group"><label class="form-label">Dose</label><input class="form-input" id="fDose" placeholder="es. 1,25mg – 2 pillole"></div>
+    <div class="form-group"><label class="form-label">Orario</label>
+      <select class="form-input" id="fOrario">
+        <option>Mattina prima colazione</option>
+        <option>Mattina dopo colazione</option>
+        <option>Cena</option>
+        <option>Come prescritto</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="fNote" placeholder="Note aggiuntive"></div>
+    <button class="btn-primary" onclick="addFarmaco()">➕ Aggiungi</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function addFarmaco() {
+  const nome = document.getElementById('fNome').value.trim();
+  if (!nome) return;
+  state.farmaci.push({
+    nome,
+    dose: document.getElementById('fDose').value,
+    orario: document.getElementById('fOrario').value,
+    colore: '#1b4f8a',
+    note: document.getElementById('fNote').value,
+  });
+  saveData(); closeModal(); renderFarmaci();
+}
+
+function editFarmaco(idx) {
+  const f = state.farmaci[idx];
+  openModal(`Modifica ${f.nome}`, `
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="efNome" value="${f.nome}"></div>
+    <div class="form-group"><label class="form-label">Dose</label><input class="form-input" id="efDose" value="${f.dose}"></div>
+    <div class="form-group"><label class="form-label">Orario</label>
+      <select class="form-input" id="efOrario">
+        <option ${f.orario==='Mattina prima colazione'?'selected':''}>Mattina prima colazione</option>
+        <option ${f.orario==='Mattina dopo colazione'?'selected':''}>Mattina dopo colazione</option>
+        <option ${f.orario==='Cena'?'selected':''}>Cena</option>
+        <option ${f.orario==='Come prescritto'?'selected':''}>Come prescritto</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="efNote" value="${f.note}"></div>
+    <button class="btn-primary" onclick="saveFarmacoEdit(${idx})">💾 Salva</button>
+    <button class="btn-danger" onclick="deleteFarmaco(${idx})">🗑️ Elimina</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function saveFarmacoEdit(idx) {
+  state.farmaci[idx].nome = document.getElementById('efNome').value;
+  state.farmaci[idx].dose = document.getElementById('efDose').value;
+  state.farmaci[idx].orario = document.getElementById('efOrario').value;
+  state.farmaci[idx].note = document.getElementById('efNote').value;
+  saveData(); closeModal(); renderFarmaci();
+}
+
+function deleteFarmaco(idx) {
+  if (confirm('Eliminare questo farmaco?')) {
+    state.farmaci.splice(idx, 1);
+    saveData(); closeModal(); renderFarmaci();
+  }
+}
+
+// ══════════════════════════════════════════════
+// ALIMENTI PAGE
+// ══════════════════════════════════════════════
+
+function setAlimentiTab(tab, el) {
+  alimentiTab = tab;
+  document.querySelectorAll('#page-alimenti .section-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAlimenti();
+}
+
+function renderAlimenti() {
+  let html = '';
+  if (alimentiTab === 'no') {
+    html = state.alimentiNo.map((f, i) => `
+      <div class="food-item no">
+        <div style="font-size:18px;flex-shrink:0;">❌</div>
+        <div style="flex:1;">
+          <div class="food-name">${f.nome}</div>
+          <div class="food-why">${f.perche}</div>
+          <div class="food-alt">${f.alt}</div>
+        </div>
+        <button class="edit-btn" onclick="editAlimento('no',${i})">✏️</button>
+      </div>
+    `).join('');
+    html += `<div style="text-align:center;margin-top:12px;"><button class="edit-btn" style="font-size:13px;padding:8px 18px;" onclick="addAlimento('no')">➕ Aggiungi alimento vietato</button></div>`;
+  } else if (alimentiTab === 'ok') {
+    html = state.alimentiOk.map((f, i) => `
+      <div class="food-item ok">
+        <div style="font-size:18px;flex-shrink:0;">✅</div>
+        <div style="flex:1;">
+          <div class="food-name">${f.nome}</div>
+          <div class="food-why">${f.perche}</div>
+          <div class="food-alt" style="color:var(--blue);">${f.qty}</div>
+        </div>
+        <button class="edit-btn" onclick="editAlimento('ok',${i})">✏️</button>
+      </div>
+    `).join('');
+    html += `<div style="text-align:center;margin-top:12px;"><button class="edit-btn" style="font-size:13px;padding:8px 18px;" onclick="addAlimento('ok')">➕ Aggiungi alimento consigliato</button></div>`;
+  } else {
+    html = state.dolci.map((d, i) => `
+      <div class="dolce-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div class="dolce-nome">${d.nome}</div>
+          <button class="edit-btn" onclick="editDolce(${i})">✏️</button>
+        </div>
+        <div class="dolce-perche">${d.perche}</div>
+        <div class="dolce-attenzione">⚠️ ${d.att}</div>
+      </div>
+    `).join('');
+    html += `<div style="text-align:center;margin-top:12px;"><button class="edit-btn" style="font-size:13px;padding:8px 18px;" onclick="addDolce()">➕ Aggiungi alternativa dolce</button></div>`;
+  }
+  document.getElementById('alimentiContent').innerHTML = html;
+}
+
+function editAlimento(type, idx) {
+  const list = type === 'no' ? state.alimentiNo : state.alimentiOk;
+  const f = list[idx];
+  const field3 = type === 'no' ? { label: 'Alternativa', id: 'eaAlt', val: f.alt } : { label: 'Quantità / Frequenza', id: 'eaAlt', val: f.qty };
+  openModal(`Modifica alimento`, `
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="eaNome" value="${f.nome}"></div>
+    <div class="form-group"><label class="form-label">Perché</label><textarea class="form-textarea" id="eaPerche">${f.perche}</textarea></div>
+    <div class="form-group"><label class="form-label">${field3.label}</label><input class="form-input" id="eaAlt" value="${field3.val}"></div>
+    <button class="btn-primary" onclick="saveAlimento('${type}',${idx})">💾 Salva</button>
+    <button class="btn-danger" onclick="deleteAlimento('${type}',${idx})">🗑️ Elimina</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function saveAlimento(type, idx) {
+  const list = type === 'no' ? state.alimentiNo : state.alimentiOk;
+  list[idx].nome = document.getElementById('eaNome').value;
+  list[idx].perche = document.getElementById('eaPerche').value;
+  if (type === 'no') list[idx].alt = document.getElementById('eaAlt').value;
+  else list[idx].qty = document.getElementById('eaAlt').value;
+  saveData(); closeModal(); renderAlimenti();
+}
+
+function deleteAlimento(type, idx) {
+  const list = type === 'no' ? state.alimentiNo : state.alimentiOk;
+  list.splice(idx, 1);
+  saveData(); closeModal(); renderAlimenti();
+}
+
+function addAlimento(type) {
+  const field3label = type === 'no' ? 'Alternativa' : 'Quantità / Frequenza';
+  openModal('Aggiungi alimento', `
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="naName" placeholder="Nome alimento"></div>
+    <div class="form-group"><label class="form-label">Perché</label><textarea class="form-textarea" id="naPerche" placeholder="Motivazione medica"></textarea></div>
+    <div class="form-group"><label class="form-label">${field3label}</label><input class="form-input" id="naAlt" placeholder=""></div>
+    <button class="btn-primary" onclick="confirmAddAlimento('${type}')">➕ Aggiungi</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function confirmAddAlimento(type) {
+  const nome = document.getElementById('naName').value.trim();
+  if (!nome) return;
+  if (type === 'no') {
+    state.alimentiNo.push({ nome, perche: document.getElementById('naPerche').value, alt: document.getElementById('naAlt').value });
+  } else {
+    state.alimentiOk.push({ nome, perche: document.getElementById('naPerche').value, qty: document.getElementById('naAlt').value });
+  }
+  saveData(); closeModal(); renderAlimenti();
+}
+
+function editDolce(idx) {
+  const d = state.dolci[idx];
+  openModal('Modifica alternativa dolce', `
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="edNome" value="${d.nome}"></div>
+    <div class="form-group"><label class="form-label">Perché va bene</label><textarea class="form-textarea" id="edPerche">${d.perche}</textarea></div>
+    <div class="form-group"><label class="form-label">Attenzione</label><input class="form-input" id="edAtt" value="${d.att}"></div>
+    <button class="btn-primary" onclick="saveDolce(${idx})">💾 Salva</button>
+    <button class="btn-danger" onclick="deleteDolce(${idx})">🗑️ Elimina</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function saveDolce(idx) {
+  state.dolci[idx].nome = document.getElementById('edNome').value;
+  state.dolci[idx].perche = document.getElementById('edPerche').value;
+  state.dolci[idx].att = document.getElementById('edAtt').value;
+  saveData(); closeModal(); renderAlimenti();
+}
+
+function deleteDolce(idx) {
+  state.dolci.splice(idx, 1);
+  saveData(); closeModal(); renderAlimenti();
+}
+
+function addDolce() {
+  openModal('Aggiungi alternativa dolce', `
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="ndNome" placeholder="es. 🍎 Mela cotta..."></div>
+    <div class="form-group"><label class="form-label">Perché va bene</label><textarea class="form-textarea" id="ndPerche"></textarea></div>
+    <div class="form-group"><label class="form-label">Attenzione</label><input class="form-input" id="ndAtt"></div>
+    <button class="btn-primary" onclick="confirmAddDolce()">➕ Aggiungi</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function confirmAddDolce() {
+  const nome = document.getElementById('ndNome').value.trim();
+  if (!nome) return;
+  state.dolci.push({ nome, perche: document.getElementById('ndPerche').value, att: document.getElementById('ndAtt').value });
+  saveData(); closeModal(); renderAlimenti();
+}
+
+// ══════════════════════════════════════════════
+// RICETTE PAGE
+// ══════════════════════════════════════════════
+
+function renderRicette() {
+  const html = state.ricette.map((r, i) => `
+    <div class="ricetta-card">
+      <div class="ricetta-header" onclick="toggleRicetta(${i})">
+        <div class="ricetta-header-text">${r.nome}</div>
+        <span class="ricetta-chevron" id="chev${i}">▼</span>
+      </div>
+      <div class="ricetta-body" id="ricetta${i}">
+        <div class="ricetta-section-title">📦 Ingredienti e Pesi</div>
+        <div class="ricetta-text">${r.ingredienti}</div>
+        <div class="ricetta-section-title">👩‍🍳 Preparazione</div>
+        <div class="ricetta-text">${r.preparazione}</div>
+        <div class="alt-box">🔄 <strong>Alternativa cottura:</strong> ${r.alternativa}</div>
+        <div class="perche-box">🔬 <strong>Perché va bene:</strong> ${r.perche}</div>
+        <button class="edit-btn" style="margin-top:12px;font-size:12px;padding:6px 14px;" onclick="editRicetta(${i})">✏️ Modifica ricetta</button>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('ricetteContent').innerHTML = html +
+    `<div style="text-align:center;margin-top:4px;margin-bottom:8px;"><button class="edit-btn" style="font-size:13px;padding:8px 18px;" onclick="addRicetta()">➕ Aggiungi ricetta</button></div>`;
+}
+
+function toggleRicetta(i) {
+  const body = document.getElementById('ricetta' + i);
+  const chev = document.getElementById('chev' + i);
+  const open = body.classList.toggle('open');
+  chev.classList.toggle('open', open);
+}
+
+function editRicetta(idx) {
+  const r = state.ricette[idx];
+  openModal(`Modifica ricetta`, `
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="erNome" value="${r.nome}"></div>
+    <div class="form-group"><label class="form-label">Ingredienti e pesi</label><textarea class="form-textarea" id="erIng">${r.ingredienti}</textarea></div>
+    <div class="form-group"><label class="form-label">Preparazione</label><textarea class="form-textarea" id="erPrep" style="min-height:120px;">${r.preparazione}</textarea></div>
+    <div class="form-group"><label class="form-label">Alternativa cottura</label><textarea class="form-textarea" id="erAlt">${r.alternativa}</textarea></div>
+    <div class="form-group"><label class="form-label">Perché va bene</label><textarea class="form-textarea" id="erPerche">${r.perche}</textarea></div>
+    <button class="btn-primary" onclick="saveRicetta(${idx})">💾 Salva</button>
+    <button class="btn-danger" onclick="deleteRicetta(${idx})">🗑️ Elimina</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function saveRicetta(idx) {
+  state.ricette[idx].nome = document.getElementById('erNome').value;
+  state.ricette[idx].ingredienti = document.getElementById('erIng').value;
+  state.ricette[idx].preparazione = document.getElementById('erPrep').value;
+  state.ricette[idx].alternativa = document.getElementById('erAlt').value;
+  state.ricette[idx].perche = document.getElementById('erPerche').value;
+  saveData(); closeModal(); renderRicette();
+}
+
+function deleteRicetta(idx) {
+  state.ricette.splice(idx, 1);
+  saveData(); closeModal(); renderRicette();
+}
+
+function addRicetta() {
+  openModal('Aggiungi ricetta', `
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="nrNome" placeholder="🍝 Nome ricetta"></div>
+    <div class="form-group"><label class="form-label">Ingredienti</label><textarea class="form-textarea" id="nrIng"></textarea></div>
+    <div class="form-group"><label class="form-label">Preparazione</label><textarea class="form-textarea" id="nrPrep" style="min-height:100px;"></textarea></div>
+    <div class="form-group"><label class="form-label">Alternativa cottura</label><input class="form-input" id="nrAlt"></div>
+    <div class="form-group"><label class="form-label">Perché va bene</label><input class="form-input" id="nrPerche"></div>
+    <button class="btn-primary" onclick="confirmAddRicetta()">➕ Aggiungi</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function confirmAddRicetta() {
+  const nome = document.getElementById('nrNome').value.trim();
+  if (!nome) return;
+  state.ricette.push({
+    nome,
+    ingredienti: document.getElementById('nrIng').value,
+    preparazione: document.getElementById('nrPrep').value,
+    alternativa: document.getElementById('nrAlt').value,
+    perche: document.getElementById('nrPerche').value,
+  });
+  saveData(); closeModal(); renderRicette();
+}
+
+// ══════════════════════════════════════════════
+// SPESA / CONTATTI / NOTE
+// ══════════════════════════════════════════════
+
+function setAltroTab(tab, el) {
+  altroTab = tab;
+  document.querySelectorAll('#page-altro .section-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAltro();
+}
+
+function renderAltro() {
+  if (altroTab === 'spesa') renderSpesa();
+  else if (altroTab === 'contatti') renderContatti();
+  else renderNote();
+}
+
+function renderSpesa() {
+  const checked = state.spesaChecked || [];
+  const cats = { frigo: '🧊 Frigo', dispensa: '🗄️ Dispensa', erbe: '🌿 Erbe aromatiche' };
+  let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="font-size:13px;color:var(--gray);">${checked.length} articoli spuntati</div>
+    <button class="edit-btn" onclick="resetSpesa()">🔄 Reset</button>
+  </div>`;
+  let itemIdx = 0;
+  for (const [key, label] of Object.entries(cats)) {
+    html += `<div class="spesa-cat">${label}</div>`;
+    state.spesa[key].forEach((item, i) => {
+      const globalIdx = `${key}_${i}`;
+      const isChecked = checked.includes(globalIdx);
+      html += `
+        <div class="spesa-item ${isChecked ? 'checked' : ''}" onclick="toggleSpesa('${globalIdx}')">
+          <div class="spesa-check">${isChecked ? '✓' : ''}</div>
+          <div>${item}</div>
+        </div>
+      `;
+    });
+  }
+  html += `<div style="text-align:center;margin-top:12px;"><button class="edit-btn" style="font-size:13px;padding:8px 18px;" onclick="addSpesaItem()">➕ Aggiungi alla lista</button></div>`;
+  document.getElementById('altroContent').innerHTML = html;
+}
+
+function toggleSpesa(id) {
+  const idx = state.spesaChecked.indexOf(id);
+  if (idx > -1) state.spesaChecked.splice(idx, 1);
+  else state.spesaChecked.push(id);
+  saveData(); renderSpesa();
+}
+
+function resetSpesa() {
+  state.spesaChecked = [];
+  saveData(); renderSpesa();
+}
+
+function addSpesaItem() {
+  openModal('Aggiungi alla spesa', `
+    <div class="form-group"><label class="form-label">Articolo</label><input class="form-input" id="nsItem" placeholder="es. Merluzzo fresco"></div>
+    <div class="form-group"><label class="form-label">Categoria</label>
+      <select class="form-input" id="nsCat">
+        <option value="frigo">🧊 Frigo</option>
+        <option value="dispensa">🗄️ Dispensa</option>
+        <option value="erbe">🌿 Erbe aromatiche</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="confirmAddSpesa()">➕ Aggiungi</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function confirmAddSpesa() {
+  const item = document.getElementById('nsItem').value.trim();
+  const cat = document.getElementById('nsCat').value;
+  if (!item) return;
+  state.spesa[cat].push(item);
+  saveData(); closeModal(); renderSpesa();
+}
+
+function renderContatti() {
+  const html = state.contatti.map((c, i) => `
+    <a class="contatto-card" href="tel:${c.numero.replace(/\s/g,'')}">
+      <div class="contatto-icon">${c.icon}</div>
+      <div class="contatto-info">
+        <div class="contatto-nome">${c.nome}</div>
+        <div class="contatto-numero">${c.numero}</div>
+        <div class="contatto-orario">${c.orario}</div>
+      </div>
+      <div style="font-size:20px;">📞</div>
+    </a>
+  `).join('');
+  document.getElementById('altroContent').innerHTML = html +
+    `<div style="text-align:center;margin-top:12px;"><button class="edit-btn" style="font-size:13px;padding:8px 18px;" onclick="addContatto()">➕ Aggiungi contatto</button></div>`;
+}
+
+function addContatto() {
+  openModal('Aggiungi contatto', `
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="ncNome" placeholder="es. Medico di base"></div>
+    <div class="form-group"><label class="form-label">Numero</label><input class="form-input" id="ncNum" type="tel" placeholder="06 ..."></div>
+    <div class="form-group"><label class="form-label">Orario</label><input class="form-input" id="ncOra" placeholder="Lun–Ven 9–12"></div>
+    <button class="btn-primary" onclick="confirmAddContatto()">➕ Aggiungi</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function confirmAddContatto() {
+  const nome = document.getElementById('ncNome').value.trim();
+  if (!nome) return;
+  state.contatti.push({ nome, numero: document.getElementById('ncNum').value, orario: document.getElementById('ncOra').value, icon: '📱' });
+  saveData(); closeModal(); renderContatti();
+}
+
+function renderNote() {
+  let html = state.note.map((n, i) => `
+    <div class="food-item" style="background:#f9f9f9;border-left:3px solid #ccc;">
+      <div style="flex:1;font-size:13px;line-height:1.5;">${n}</div>
+      <button class="edit-btn" onclick="deleteNota(${i})">🗑️</button>
+    </div>
+  `).join('');
+  html += `<div style="text-align:center;margin-top:12px;"><button class="edit-btn" style="font-size:13px;padding:8px 18px;" onclick="addNota()">➕ Aggiungi nota</button></div>`;
+  document.getElementById('altroContent').innerHTML = html;
+}
+
+function deleteNota(idx) {
+  state.note.splice(idx, 1);
+  saveData(); renderNote();
+}
+
+function addNota() {
+  openModal('Aggiungi nota medica', `
+    <div class="form-group"><label class="form-label">Nota</label><textarea class="form-textarea" id="nnTesto" placeholder="es. ⚠️ Ricordare di..."></textarea></div>
+    <button class="btn-primary" onclick="confirmAddNota()">➕ Aggiungi</button>
+    <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+  `);
+}
+
+function confirmAddNota() {
+  const t = document.getElementById('nnTesto').value.trim();
+  if (!t) return;
+  state.note.push(t);
+  saveData(); closeModal(); renderNote();
+}
+
+// ══════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════
+
+function openModal(title, body) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('editModal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('editModal')) {
+    document.getElementById('editModal').classList.remove('open');
+  }
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+
+renderDaySel();
+renderDieta();
+renderFarmaci();
+renderAlimenti();
+renderRicette();
+renderAltro();
+</script>
+</body>
+</html>
